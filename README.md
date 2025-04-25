@@ -2,10 +2,11 @@
 jenkins shared library
 
 
-### Usage
+### Function List
 |function|return|params|
 |---|:---:|:---|
 |`build`|void|void|
+|`build.commitStatus`|void|String message, String state|
 |`build.gradle`|void|void|
 |`build.docker`|void|String imageName, String imageTag, boolean useKaniko|
 |`k8s`|void|void|
