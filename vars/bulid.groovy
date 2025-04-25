@@ -4,6 +4,11 @@ def call() {
     echo 'BuildTools version: 0.1'
 }
 
+def commitStatus(String message, String state) {
+    def buildUtils = new BuildUtils(steps)
+    buildUtils.setStatus("${env.GIT_URL}", message, state)
+}
+
 def gradle() {
     def buildUtils = new BuildUtils(steps)
     buildUtils.gradleBuild("${env.WORKSPACE}")

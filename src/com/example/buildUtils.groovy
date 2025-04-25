@@ -7,6 +7,19 @@ class BuildUtils implements Serializable {
         this.steps = steps
     }
 
+    def setCommitStatus(String repositoryUrl, String message, String state) {
+        step([
+            $class: "GitHubCommitStatusSetter",
+            reposSource: [$class: "ManuallyEnteredRepositorySource", url: "${repositoryUrl}"],
+            contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+            errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+            statusResultSource: [
+                $class: "ConditionalStatusResultSource",
+                results: [[$class: "AnyBuildResult", message: message, state: state]]
+            ]
+        ])
+    }
+
     def gradleBuild(String projectDir) {
         steps.sh "cd ${projectDir}"
         steps.sh 'chmod +x ./gradlew'
