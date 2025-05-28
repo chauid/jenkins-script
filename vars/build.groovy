@@ -10,6 +10,21 @@ def gradle(String options = 'BUILD') {
     buildutils.gradleBuild("${env.WORKSPACE}", "${options}")
 }
 
+def npm() {
+    def buildutils = new Buildutils(steps)
+    buildutils.nodejsBulid("${env.WORKSPACE}", 'npm')
+}
+
+def yarn() {
+    def buildutils = new Buildutils(steps)
+    buildutils.nodejsBulid("${env.WORKSPACE}", 'yarn')
+}
+
+def pnpm() {
+    def buildutils = new Buildutils(steps)
+    buildutils.nodejsBulid("${env.WORKSPACE}", 'pnpm')
+}
+
 def setDockerfile(String projectType) {
     if (projectType == 'springboot') {
         steps.sh """
@@ -21,6 +36,21 @@ def setDockerfile(String projectType) {
     } else {
         error "Unsupported project type: ${projectType}"
     }
+}
+
+def getProjectVersion(String projectType) {
+    def version = 'unknown'
+    switch (projectType) {
+        case 'springboot':
+            version = steps.sh(script: "sed -nE \"s/^version *= *'([^']+)'/\\1/p\" build.gradle", returnStdout: true).trim()
+            break
+        case 'nodejs':
+            version = steps.sh(script: "sed -n 's/^[[:space:]]*\"version\":[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p' package.json", returnStdout: true).trim()
+            break
+        default:
+            error "Unsupported project type: ${projectType}"
+    }
+    return version
 }
 
 def image(String imageName, String imageTag, boolean useKaniko = false) {
