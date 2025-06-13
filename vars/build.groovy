@@ -7,22 +7,22 @@ def call() {
 
 def gradle(String options = 'BUILD') {
     def buildutils = new Buildutils(steps)
-    buildutils.gradleBuild("${env.WORKSPACE}", "${options}")
+    buildutils.gradleBuild(env.WORKSPACE, options)
 }
 
-def npm() {
+def npm(boolean needsInstall = false) {
     def buildutils = new Buildutils(steps)
-    buildutils.nodejsBulid("${env.WORKSPACE}", 'npm')
+    buildutils.nodejsBulid(env.WORKSPACE, 'npm', needsInstall)
 }
 
-def yarn() {
+def yarn(boolean needsInstall = false) {
     def buildutils = new Buildutils(steps)
-    buildutils.nodejsBulid("${env.WORKSPACE}", 'yarn')
+    buildutils.nodejsBulid(env.WORKSPACE, 'yarn', needsInstall)
 }
 
-def pnpm() {
+def pnpm(boolean needsInstall = false) {
     def buildutils = new Buildutils(steps)
-    buildutils.nodejsBulid("${env.WORKSPACE}", 'pnpm')
+    buildutils.nodejsBulid(env.WORKSPACE, 'pnpm', needsInstall)
 }
 
 def setDockerfile(String projectType) {
@@ -55,5 +55,5 @@ def getProjectVersion(String projectType) {
 
 def image(String imageName, String imageTag, boolean useKaniko = false) {
     def buildutils = new Buildutils(steps)
-    buildutils.imageBuild("${env.WORKSPACE}", "${imageName}", "${imageTag}", useKaniko)
+    buildutils.imageBuild(env.WORKSPACE, imageName, imageTag, useKaniko)
 }

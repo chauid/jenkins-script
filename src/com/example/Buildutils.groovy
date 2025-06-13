@@ -7,7 +7,7 @@ class Buildutils implements Serializable {
         this.steps = steps
     }
 
-    def gradleBuild(String projectDir, String options = 'BUILD') {
+    def gradleBuild(String projectDir, String options) {
         steps.sh "cd ${projectDir}"
         steps.sh 'chmod +x ./gradlew'
         switch(options) {
@@ -23,25 +23,15 @@ class Buildutils implements Serializable {
         }
     }
 
-    def nodejsBulid(String projectDir, String packageManager = 'npm') {
+    def nodejsBulid(String projectDir, String packageManager, boolean needsInstall) {
         steps.sh "cd ${projectDir}"
-        switch(packageManager) {
-            case 'npm':
-                steps.sh 'npm install'
-                steps.sh 'npm run build'
-                break
-            case 'yarn':
-                steps.sh 'yarn install'
-                steps.sh 'yarn build'
-                break
-            case 'pnpm':
-                steps.sh 'pnpm install'
-                steps.sh 'pnpm run build'
-                break
+        if (needsInstall) {
+            steps.sh "${packageManager} install"
         }
+        steps.sh "${packageManager} run build"
     }
 
-    def imageBuild(String projectDir, String imageName, String imageTag, boolean useKaniko = false) {
+    def imageBuild(String projectDir, String imageName, String imageTag, boolean useKaniko) {
         steps.sh "cd ${projectDir}"
         if (useKaniko) {
             steps.container('kaniko') {
